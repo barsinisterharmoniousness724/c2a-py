@@ -1,6 +1,6 @@
 services:
   c2a:
-    image: ghcr.io/yuworm/c2a-py:${C2A_VERSION:-latest}
+    image: ghcr.io/wuyao4/c2a-py:${C2A_VERSION:-latest}
     container_name: c2a-py
     restart: unless-stopped
     ports:

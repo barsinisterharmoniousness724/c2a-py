@@ -88,6 +88,78 @@ uvicorn main:app --host 0.0.0.0 --port 8000 --reload
 | `TOOLS_DISABLED` | 是否禁用工具注入 | `false` |
 | `USER_AGENT` | 转发请求时的浏览器 UA | 内置 Chrome UA |
 
+## Docker 部署
+
+### 方式一：使用预构建镜像（推荐）
+
+无需克隆代码，直接拉取 GitHub Container Registry 中的镜像运行。
+
+**1. 准备配置文件**
+
+```bash
+curl -O https://raw.githubusercontent.com/wuyao4/c2a-py/master/.env.example
+cp .env.example .env
+```
+
+编辑 `.env`，至少修改 `AUTH_TOKEN`：
+
+```bash
+AUTH_TOKEN=your-secret-token
+```
+
+**2. 下载 compose 文件并启动**
+
+```bash
+curl -O https://raw.githubusercontent.com/wuyao4/c2a-py/master/docker-compose.yml
+docker compose up -d
+```
+
+服务默认监听 `http://localhost:3010`。
+
+**3. 指定版本（可选）**
+
+```bash
+C2A_VERSION=1.2.3 docker compose up -d
+```
+
+### 方式二：本地构建镜像
+
+克隆代码后自行构建：
+
+```bash
+git clone https://github.com/wuyao4/c2a-py.git
+cd c2a-py
+cp .env.example .env  # 按需修改
+docker compose build
+docker compose up -d
+```
+
+### 常用命令
+
+```bash
+# 查看运行状态
+docker compose ps
+
+# 实时查看日志
+docker compose logs -f
+
+# 停止服务
+docker compose down
+
+# 更新到最新镜像
+docker compose pull && docker compose up -d
+```
+
+### 健康检查
+
+服务启动后可访问以下端点确认运行正常：
+
+```bash
+curl http://localhost:3010/health
+```
+
+---
+
 ## Claude Code 使用方式
 
 服务启动后，可将 Claude Code 指向本代理：
