@@ -1,0 +1,27 @@
+services:
+  c2a:
+    image: ghcr.io/wuyao4/c2a-py:${C2A_VERSION:-latest}
+    container_name: c2a-py
+    restart: unless-stopped
+    ports:
+      - "${PORT:-3010}:3010"
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      - HOST=0.0.0.0
+      - PORT=${PORT:-3010}
+      - CURSOR_CHAT_API=${CURSOR_CHAT_API:-https://cursor.com/api/chat}
+      - CURSOR_MODEL=${CURSOR_MODEL:-claude-4-5}
+      - REQUEST_TIMEOUT=${REQUEST_TIMEOUT:-90}
+      - AUTH_TOKEN=${AUTH_TOKEN:-sk-123456}
+      - SANITIZE_RESPONSE=${SANITIZE_RESPONSE:-true}
+      - TOOLS_PASSTHROUGH=${TOOLS_PASSTHROUGH:-false}
+      - TOOLS_DISABLED=${TOOLS_DISABLED:-false}
+      - USER_AGENT=${USER_AGENT:-}
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:3010/health')"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
