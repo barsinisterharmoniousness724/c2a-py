@@ -1,9 +1,6 @@
 services:
   c2a:
-    build:
-      context: .
-      dockerfile: Dockerfile
-    image: c2a-py:latest
+    image: ghcr.io/yuworm/c2a-py:${C2A_VERSION:-latest}
     container_name: c2a-py
     restart: unless-stopped
     ports:
